@@ -12,7 +12,7 @@ namespace WorldGrid
 
         private readonly Dictionary<Cell_ID, Chunk> _chunkDictionary;
 
-        public ChunkManager(LayerMask layerMask, Grid grid)
+        public ChunkManager(LayerMask layerMask, Grid grid, Vector3 worldCenter)
         {
             _layerMask = layerMask;
             _grid = grid;
@@ -21,7 +21,7 @@ namespace WorldGrid
 
             var gameObject = new GameObject("Chunk Manager");
             _chunkManagerTransform = gameObject.transform;
-            _chunkManagerTransform.position = Vector3.zero;
+            _chunkManagerTransform.position = worldCenter;
         }
 
         public void CreateChunks()
@@ -54,6 +54,9 @@ namespace WorldGrid
                 if (_layerMask != (_layerMask | (1 << meshGameObject.layer))) continue;
 
                 var cellWithMesh = _grid.GetCellWithPoint(meshGameObject.transform.position);
+                
+                if(!cellWithMesh.CellID.IsValidCell) continue;
+                
                 _chunkDictionary[cellWithMesh.CellID].AddMeshFilter(meshFilter);
             }
         }

@@ -40,6 +40,9 @@ namespace WorldGrid
         public void MergeMeshes()
         {
             MeshCombiner meshCombiner = new MeshCombiner();
+            if (_meshFilters.Count == 0)
+                return;
+            
             foreach (var meshFilter in _meshFilters)
             {
                 var mesh = meshFilter.sharedMesh;

@@ -18,9 +18,10 @@ namespace WorldGrid
         private void Start()
         {
             _grid = new BoxGrid();
-            _grid.Init(transform.position, worldSize, gridDensity);
+            var worldCenter = transform.position;
+            _grid.Init(worldCenter, worldSize, gridDensity);
 
-            _chunkManager = new ChunkManager(layerMask, _grid);
+            _chunkManager = new ChunkManager(layerMask, _grid, worldCenter);
             _chunkManager.CreateChunks();
             
         }

@@ -6,11 +6,15 @@ namespace WorldGrid
     {
         public uint Row { get; }
         public uint Column { get; }
+        
+        // Incase the actual cell is outside bounds
+        public bool IsValidCell { get; }
 
-        public Cell_ID(uint row, uint column)
+        public Cell_ID(uint row, uint column, bool valid = true)
         {
             Row = row;
             Column = column;
+            IsValidCell = valid;
         }
 
         public override string ToString()

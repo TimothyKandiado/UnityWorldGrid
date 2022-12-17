@@ -39,7 +39,9 @@ namespace WorldGrid
         {
             var cellId = CreateCellIdFromPosition(point);
 
-            var cellPosition = _cellDictionary[cellId];
+            var definedCellId = new Cell_ID(cellId.Row, cellId.Column);
+
+            var cellPosition = _cellDictionary[definedCellId];
 
             var cell = new Cell(cellId, cellPosition);
   
@@ -48,25 +50,43 @@ namespace WorldGrid
 
         private Cell_ID CreateCellIdFromPosition(Vector3 point)
         {
-           // calculate column the point is in 
-           uint column = 0; // assume point is in the firstColumn
-           var leftBound = _worldCenter.x - _worldSize / 2.0f;
-           while (column < _gridDensity)
-           {
-               if((leftBound + _cellSize * (column + 1)) > point.x) break;
-               column++;
-           }
+            // calculate column the point is in 
+            uint column = 0; // assume point is in the firstColumn
+            
+            var leftBound = _worldCenter.x - _worldSize / 2.0f;
+            
+            // variable to check whether the cell has been found outside bounds of the defined world
+            // true means its within bounds false means its outside bounds
+            var isValid = true; 
+            
+            while (column < _gridDensity)
+            {
+                if((leftBound + _cellSize * (column + 1)) > point.x) break;
+                column++;
+            }
 
-           uint row = 0; // assume point is in first row
-           var bottomBound = _worldCenter.z - _worldSize / 2.0f;
+            uint row = 0; // assume point is in first row
+            var bottomBound = _worldCenter.z - _worldSize / 2.0f;
 
-           while (row < _gridDensity)
-           {
-               if((bottomBound + _cellSize * (row + 1)) > point.z) break;
-               row++;
-           }
+            while (row < _gridDensity)
+            {
+                if((bottomBound + _cellSize * (row + 1)) > point.z) break;
+                row++;
+            }
 
-           return new Cell_ID(column, row);
+            if (row == _gridDensity)
+            {
+                isValid = false;
+                row = _gridDensity - 1;
+            }
+
+            if (column >= _gridDensity)
+            {
+                isValid = false;
+                column = _gridDensity - 1;
+            }
+
+            return new Cell_ID(column, row, isValid);
         }
 
         private bool CellHasPoint(Cell cell, Vector3 point)
